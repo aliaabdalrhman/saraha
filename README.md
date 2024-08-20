@@ -1,4 +1,5 @@
-Sarahaا - Anonymous Messaging Platform
+Sarahah - Anonymous Messaging Platform
+
 Overview
 Saraha is a web application designed to facilitate anonymous communication, enabling users to receive candid feedback and messages from peers without revealing the sender's identity.
 
