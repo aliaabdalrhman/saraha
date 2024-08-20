@@ -1,11 +1,14 @@
 import connectDb from '../DB/Connection.js';
-import authRouter from './Modules/Auth/Auth.router.js'
-import messageRouter from './Modules/Messages/Message.router.js'
+import authRouter from './Modules/Auth/Auth.router.js';
+import messageRouter from './Modules/Messages/Message.router.js';
+import userRouter from './Modules/Users/User.router.js';
+
 const initApp = (app, express) => {
     connectDb(),
-    app.use(express.json());
+        app.use(express.json());
     app.use('/auth', authRouter);
     app.use('/messages', messageRouter);
+    app.use('/users', userRouter);
     app.get('*', (req, res) => {
         return res.status(404).json({ message: "page not found" });
     })
