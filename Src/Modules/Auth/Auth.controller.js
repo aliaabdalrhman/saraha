@@ -4,15 +4,15 @@ import jwt from "jsonwebtoken";
 import { sendEmail } from "../../Utilities/SendEmail.js";
 
 export const register = async (req, res) => {
-    try {
-        const { userName, email, password, cpassword } = req.body;
-        const user = await userModel.findOne({ email });
-        if (user) {
-            return res.status(409).json({ message: "Email already exists" });
-        }
-        else {
-            const hashedPassword = bcrypt.hashSync(password, parseInt(process.env.SALTROUND));
-            const html = `
+    const { userName, email, password, cpassword } = req.body;
+    const user = await userModel.findOne({ email });
+    if (user) {
+        return res.status(409).json({ message: "Email already exists" });
+
+    }
+    else {
+        const hashedPassword = bcrypt.hashSync(password, parseInt(process.env.SALTROUND));
+        const html = `
                 <!DOCTYPE html>
                 <html lang="en">
                 <head>
@@ -61,7 +61,7 @@ export const register = async (req, res) => {
                 <body>
                     <div class="email-container">
                         <div class="email-header">
-                            <h1>Welcome to Saraha!</h1>
+                            <h1>Welcome to Sarahah!</h1>
                         </div>
                         <div class="email-body">
                             <p>Dear ${userName},</p>
@@ -75,19 +75,15 @@ export const register = async (req, res) => {
                 </body>
                 </html>
             `;
-            sendEmail(email, "Welcome to saraha", html);
-            await userModel.create({ userName, email, password: hashedPassword });
-            return res.status(201).json({ message: "success" });
-        }
-    } catch (error) {
-        return res.status(500).json({ message: "Internal Server Error", error: error.stack });
+        sendEmail(email, "Welcome to sarahah", html);
+        await userModel.create({ userName, email, password: hashedPassword });
+        return res.status(201).json({ message: "success" });
     }
 
 }
 
 export const login = async (req, res) => {
-    try{
-          const { email, password } = req.body;
+    const { email, password } = req.body;
     const user = await userModel.findOne({ email });
     if (!user) {
         return res.status(404).json({ message: "user not found" });
@@ -102,8 +98,5 @@ export const login = async (req, res) => {
             return res.status(200).json({ message: "success", token });
         }
     }
-    }catch (error) {
-        return res.status(500).json({ message: "Internal Server Error", error: error.stack });
-    }
-  
+
 }
