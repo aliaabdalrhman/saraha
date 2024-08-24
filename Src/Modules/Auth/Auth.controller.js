@@ -2,13 +2,13 @@ import userModel from "../../../DB/Models/User.model.js";
 import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
 import { sendEmail } from "../../Utilities/SendEmail.js";
+import { AppError } from "../../../GlobalError.js";
 
-export const register = async (req, res) => {
+export const register = async (req, res, next) => {
     const { userName, email, password, cpassword } = req.body;
     const user = await userModel.findOne({ email });
     if (user) {
-        return res.status(409).json({ message: "Email already exists" });
-
+        return next(new AppError('Email already exists', 409));
     }
     else {
         const hashedPassword = bcrypt.hashSync(password, parseInt(process.env.SALTROUND));
@@ -82,16 +82,16 @@ export const register = async (req, res) => {
 
 }
 
-export const login = async (req, res) => {
+export const login = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await userModel.findOne({ email });
     if (!user) {
-        return res.status(404).json({ message: "user not found" });
+        return next(new AppError("user not found", 404))
     }
     else {
         const isMatch = bcrypt.compareSync(password, user.password);
         if (!isMatch) {
-            return res.status(404).json({ message: "invalid password" });
+            return next(new AppError("invalid password", 404));
         }
         else {
             const token = jwt.sign({ id: user._id }, process.env.LOGINSIGNATURE, { expiresIn: "1h" });
