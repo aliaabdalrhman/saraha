@@ -6,7 +6,7 @@ import { asyncHandler } from "../../Utilities/CatchError.js";
 
 const router = Router();
 
-router.post('/register', validation(registerSchema), asyncHandler(authController.register));
-router.post('/login', validation(loginSchema), asyncHandler(authController.login));
+router.post('/register',asyncHandler(validation(registerSchema)) , asyncHandler(authController.register));
+router.post('/login', asyncHandler(validation(loginSchema)), asyncHandler(authController.login));
 
 export default router;

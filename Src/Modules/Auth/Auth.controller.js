@@ -3,12 +3,13 @@ import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
 import { sendEmail } from "../../Utilities/SendEmail.js";
 import { AppError } from "../../../GlobalError.js";
+import { AppSuccess } from "../../../GlobalSuccess.js";
 
 export const register = async (req, res, next) => {
     const { userName, email, password, cpassword } = req.body;
     const user = await userModel.findOne({ email });
     if (user) {
-        return next(new AppError('Email already exists', 409));
+        return next(new AppError("Email already exists", 409));
     }
     else {
         const hashedPassword = bcrypt.hashSync(password, parseInt(process.env.SALTROUND));
@@ -77,7 +78,7 @@ export const register = async (req, res, next) => {
             `;
         sendEmail(email, "Welcome to sarahah", html);
         await userModel.create({ userName, email, password: hashedPassword });
-        return res.status(201).json({ message: "success" });
+        return next(new AppSuccess("success", 201));
     }
 
 }
@@ -95,7 +96,7 @@ export const login = async (req, res, next) => {
         }
         else {
             const token = jwt.sign({ id: user._id }, process.env.LOGINSIGNATURE, { expiresIn: "1h" });
-            return res.status(200).json({ message: "success", token });
+            return next(new AppSuccess("success", 200, { token }));
         }
     }
 

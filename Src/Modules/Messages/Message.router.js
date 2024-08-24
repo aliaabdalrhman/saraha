@@ -7,7 +7,7 @@ import { asyncHandler } from "../../Utilities/CatchError.js";
 
 const router = Router();
 
-router.post('/:receiverId', validation(sendMessageSchema), asyncHandler(MessageController.sendMessage));
-router.get('/', auth, asyncHandler(MessageController.getMessages));
+router.post('/:receiverId', asyncHandler(validation(sendMessageSchema)), asyncHandler(MessageController.sendMessage));
+router.get('/', asyncHandler(auth), asyncHandler(MessageController.getMessages));
 
 export default router;

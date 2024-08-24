@@ -1,6 +1,7 @@
 import messageModel from "../../../DB/Models/Message.model.js";
 import userModel from "../../../DB/Models/User.model.js";
 import { AppError } from "../../../GlobalError.js";
+import { AppSuccess } from "../../../GlobalSuccess.js";
 
 export const sendMessage = async (req, res, next) => {
     const { message } = req.body;
@@ -11,12 +12,11 @@ export const sendMessage = async (req, res, next) => {
     }
     else {
         const Message = await messageModel.create({ message, receiverId });
-        return res.status(201).json({ message: "success", Message });
-
+        return next(new AppSuccess("success", 201, { Message }));
     }
 }
 
 export const getMessages = async (req, res, next) => {
     const messages = await messageModel.find({ receiverId: req.id });
-    return res.status(200).json({ message: "success", messages });
+    return next(new AppSuccess("success", 200, { messages }));
 }
